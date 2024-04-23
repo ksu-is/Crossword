@@ -1,1 +1,44 @@
+import random
+import time
 
+
+def generate_random_possibility(words, dim):
+    """ This function returns a randomly-generated possibility, instead of generating all
+    possible ones.
+    """
+    # Generate possibility
+    possibility = {"word": words[random.randint(0, len(words)-1)],
+                   "location": [random.randint(0, dim[0]-1), random.randint(0, dim[1]-1)],
+                   "D": "S" if random.random() > 0.5 else "E"}
+
+    # Return it
+    return possibility
+# This section randomizes the interface of the generated crossword puzzle. 
+
+
+def is_within_bounds(word_len, line, column, direction, grid_width, grid_height):
+    """ Returns whether the given word is withing the bounds of the grid.
+    """
+    return (direction == "E" and column + word_len <= grid_width) or (direction == "S" and line + word_len <= grid_height)
+# This section ensures that a word listed is within the grid of the crossword puzzle
+# This helps to prevent words from generating off the page.
+
+
+def collides_with_existing_words(word, line, column, direction, grid):
+    """ Returns whether the given word collides with an existing one.
+    """
+    for k, letter in enumerate(list(word)):
+        if direction == "E":
+            # Collisions
+            if grid[line][column+k] != 0 and grid[line][column+k] != letter:
+                return True
+        if direction == "S":
+            # Collisions
+            if grid[line+k][column] != 0 and grid[line+k][column] != letter:
+                return True
+
+    return False
+# This section ensures that there is no overlap/collsion with another word
+# This is about 15% of the length of the original file.
+# This part is particularly intresting as it is laying out the rules to preemptively avoid any 'glitches' or unexpected problems.
+# Plan to transcribe the rest of the fundamental aspects of this file soon. 
