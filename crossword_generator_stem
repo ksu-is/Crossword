@@ -1,1 +1,49 @@
+# Argparse is a command-line parsing module in the Python library. 
+# Using this allows command line arguements in the program.
+import argparse
 
+# These imports are referencing other files that I will be developing under the scope of this project.
+import file_ops
+import grid_generator
+from grid_generator import GridGenerator
+
+
+# This section details the arguments executed by the aforementioned Argparse import. 
+def parse_cmdline_args():
+    """ Uses argparse to get commands line args.
+    """
+    parser = argparse.ArgumentParser(description='Generate a crossword puzzle.')
+    parser.add_argument('-f', type=str,
+                        default="words.txt",
+                        dest="word_file",
+                        help="A file containing words, one word per line.")
+    parser.add_argument('-d', type=int,
+                        nargs="+",
+                        default=[20, 20],
+                        dest="dim",
+                        help="Dimensions of the grid to build.")
+    parser.add_argument('-n', type=int,
+                        default=1,
+                        dest="n_loops",
+                        help="Number of execution loops to run.")
+    parser.add_argument('-t', type=int,
+                        default=10,
+                        dest="timeout",
+                        help="Maximum execution time, in seconds, per execution loop.")
+    parser.add_argument('-o', type=float,
+                        default=1.0,
+                        dest="target_occ",
+                        help="Desired occupancy of the final grid. Default is 1.0, which just uses all of the allotted time.")
+    parser.add_argument('-p', type=str,
+                        default="out.pdf",
+                        dest="out_pdf",
+                        help="Name of the output pdf file.")
+    parser.add_argument('-a', type=str,
+                        default="basic",
+                        dest="algorithm",
+                        help="The algorithm to use.")
+
+    return parser.parse_args()
+
+# This is about half of length of the original file. 
+# Plan to transribe the rest of fundementals of this code file at a later date. 
