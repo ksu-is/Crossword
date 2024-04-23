@@ -25,7 +25,7 @@ I have found a very strong example that I think could be used as a blueprint for
 The github file is called "crossword_generator" by user "gondsm."
 
 The reason that I have identified this example as promising is because it only has 4 files that compose the code.
-Each of these files is no more than 200 lines of length and they each seem to be realtively comprehensible.
+The combined length of code on the 4 main files is around 600 lines and they each seem to be realtively comprehensible.
 The other examples that I was looking towards were much longer, more complex, and difficult to understand. 
 
 I plan to use this example as a blueprint for now and hopefully I will not run into major problems. 
