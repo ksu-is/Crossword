@@ -1,1 +1,28 @@
+import os
+import pprint
+import shutil
+import subprocess
+import tempfile
 
+
+def read_word_list(filename, min_length=2, min_different_letters=2):
+    """ This function reads the file and returns the words read. It expects a
+    file where each word is in a line.
+    """
+# These are the input requirements for this type of code.
+# Using a text file where there is 1 word on each line, this program will generate a crossword puzzzle. 
+    # Initialize words list
+    words = []
+
+    # Get all the words
+    with open(filename, encoding='latin1') as words_file:
+        for line in words_file:
+            word = line.strip()
+            if len(word) > min_length and len(set(word)) > min_different_letters:
+                words.append(word)
+
+    # and we're done
+    return words
+
+# This is about 20% of the length of the original file that I am using as reference
+# Plan to transribe the rest of the fundamentals of this file soon
