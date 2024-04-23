@@ -1,1 +1,16 @@
+import basic_ops
+# Import of another file located as a part of the operation of the code
 
+
+class GridGenerator:
+    def __init__(self, word_list, dimensions, n_loops, timeout, target_occupancy):
+        self.word_list = word_list
+        self.dimensions = dimensions
+        self.n_loops = n_loops
+        self.timeout = timeout
+        self.target_occupancy = target_occupancy
+        self.reset()
+
+# Definitions for key functions located throughout other files. 
+# This is about 25% the length of the original file
+# Plan to transribe the rest of this file using a reference soon. 
