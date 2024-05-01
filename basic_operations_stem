@@ -150,3 +150,33 @@ def is_valid(possibility, grid, words):
     # If we can't find any issues, it must be okay!
     return True
 
+   # Start and End
+    if not ends_are_isolated(word, i, j, D, grid):
+        return False
+
+    # If we can't find any issues, it must be okay!
+    return True
+
+
+def score_candidate(candidate_word, new_words):
+    return len(candidate_word) + 10*len(new_words)
+
+
+def add_word_to_grid(possibility, grid):
+    """ Adds a possibility to the given grid, which is modified in-place.
+    (see generate_grid)
+    """
+    # Import possibility to local vars, for clarity
+    i = possibility["location"][0]
+    j = possibility["location"][1]
+    word = possibility["word"]
+
+    # Word is left-to-right
+    if possibility["D"] == "E":
+        grid[i][j:len(list(word))+j] = list(word)
+
+    # Word is top-to-bottom
+    # (I can't seem to be able to use the slicing as above)
+    if possibility["D"] == "S":
+        for index, a in enumerate(list(word)):
+            grid[i+index][j] = a
