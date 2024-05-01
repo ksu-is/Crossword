@@ -63,3 +63,54 @@ def ends_are_isolated(word, line, column, direction, grid):
 
     return True
 
+def find_new_words(word, line, column, direction, grid, words):
+    """ Given a new potential word, looks for new words that might have been created by adding it to the grid.
+
+    Returns None if new words are (geometrically) created but are not valid.
+    """
+    new_words = []
+
+    for k, letter in enumerate(list(word)):
+        if direction == "E":
+            # If the space was originally blank and there are adjacent letters
+            if grid[line][column+k] == 0 and (line > 0 and grid[line-1][column+k] != 0 or line < len(grid)-1 and grid[line+1][column+k]):
+                # Then we have to extract this new word
+                poss_word = [letter]
+                l = 1
+                while line+l < len(grid[0]) and grid[line+l][column+k] != 0:
+                    poss_word.append(grid[line+l][column+k])
+                    l+=1
+                l = 1
+                while line-l > 0 and grid[line-l][column+k] != 0:
+                    poss_word.insert(0, grid[line-l][column+k])
+                    l+=1
+                poss_word = ''.join(poss_word)
+
+                # And check if it exists in the list
+                if poss_word not in words:
+                    return None
+
+                new_words.append({"D": "S", "word":poss_word, "location": [line-l+1, column+k]})
+
+        if direction == "S":
+            # If the space was originally blank and there are adjacent letter
+            if grid[line+k][column] == 0 and (column > 0 and grid[line+k][column-1] != 0 or column < len(grid[0])-1 and grid[line+k][column+1]):
+                # Then we have to extract this new word
+                poss_word  = [letter]
+                l = 1
+                while column+l < len(grid) and grid[line+k][column+l] != 0:
+                    poss_word.append(grid[line+k][column+l])
+                    l+=1
+                l = 1
+                while column-l > 0 and grid[line+k][column-l] != 0:
+                    poss_word.insert(0, grid[line+k][column-l])
+                    l+=1
+                poss_word = ''.join(poss_word)
+
+                # And check if it exists in the list
+                if poss_word not in words:
+                    return None
+
+                new_words.append({"D": "E", "word":poss_word, "location": [line+k,column-l+1]})
+
+    return new_words
