@@ -114,3 +114,39 @@ def find_new_words(word, line, column, direction, grid, words):
                 new_words.append({"D": "E", "word":poss_word, "location": [line+k,column-l+1]})
 
     return new_words
+
+def is_valid(possibility, grid, words):
+    """ This function determines whether a possibility is still valid in the
+    given grid. (see generate_grid)
+
+    A possibility is deemed invalid if:
+     -> it extends out of bounds
+     -> it collides with any word that already exists, i.e. if any of its
+     elements does not match the words already in the grid;
+     -> if the cell that precedes and follows it in its direction is not empty.
+
+    The function also analyses how the word interacts with previous adjacent
+    words, and invalidates the possibility of returns a list with the new
+    words, if applicable.
+    """
+    # Import possibility to local vars, for clarity
+    i = possibility["location"][0]
+    j = possibility["location"][1]
+    word = possibility["word"]
+    D = possibility["D"]
+
+    # Boundaries
+    if not is_within_bounds(len(word), i, j, D, len(grid[0]), len(grid)):
+        return False
+
+    # Collisions
+    if collides_with_existing_words(word, i, j, D, grid):
+        return False
+
+    # Start and End
+    if not ends_are_isolated(word, i, j, D, grid):
+        return False
+
+    # If we can't find any issues, it must be okay!
+    return True
+
