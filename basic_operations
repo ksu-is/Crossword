@@ -240,3 +240,92 @@ def generate_valid_candidates(grid, words, dim, timeout):
         scores.append(score)
 
     return candidates, scores, new_words
+
+
+def is_cell_free(line, col, grid):
+    """ Checks whether a cell is free.
+
+    Does not throw if the indices are out of bounds. These cases return as free.
+    """
+    # Negative indices are "legal", but we treat them as out of bounds.
+    if line < 0 or col < 0:
+        return True
+
+    try:
+        return grid[line][col] == 0
+    except IndexError:
+        return True
+
+
+def is_isolated(possibility, grid):
+    """ Determines whether a given possibility is completely isolated in the given grid.
+
+    It is assumed that the possibility is valid, of course.
+    """
+    # Import possibility to local vars, for clarity
+    line = possibility["location"][0]
+    column = possibility["location"][1]
+    word = possibility["word"]
+    direction = possibility["D"]
+
+    # The word cannot be isolated if there is something at its ends
+    if not ends_are_isolated(word, line, column, direction, grid):
+        return False
+
+    # Look at the cells that surround the word
+    for i in range(len(word)):
+        if direction == "E":
+            if not is_cell_free(line-1, column+i, grid) or not is_cell_free(line+1, column+i, grid):
+                return False
+        if direction == "S":
+            if not is_cell_free(line+i, column-1, grid) or not is_cell_free(line+i, column+1, grid):
+                return False
+
+    # If nothing was found, then the word is isolated
+    return True
+
+
+def basic_grid_fill(grid, occ_goal, timeout, dim, words):
+    """ Actually finds valid possibilities, scores them and adds them to the grid.
+
+    Algorithm:
+    This function operates by taking the words it receives randomly generating possibilities
+    until a valid one is found. It is then added to the grid.
+    This is done until the grid is above a given completion level.
+    """
+    start_time = time.time()
+    occupancy = 0
+    added_words = []
+
+    while occupancy < occ_goal and time.time() - start_time < timeout:
+        # Generate some candidates
+        # This is limited to 1/10 of the total time we can use.
+        candidates, scores, new_words = generate_valid_candidates(grid, words, dim, timeout/10)
+
+        # If there are no candidates, we move to the next iteration. This ensures that we can actually respect timeouts.
+        if not candidates:
+            continue
+
+        # Select best candidate
+        new, new_score = select_candidate(candidates, scores)
+
+        # Add word to grid and to the list of added words
+        add_word_to_grid(new, grid)
+        added_words.append(new)
+
+        # Add new words to the words list
+        for word in new_words:
+            added_words.append(word)
+
+        # Remove words from list so we don't repeat ourselves
+        words.remove(new["word"])
+        for word in new_words:
+            words.remove(word["word"])
+
+        # Update occupancy
+        occupancy = compute_occupancy(grid)
+        print("Word \"{}\" added. Occupancy: {:2.3f}. Score: {}.".format(new["word"], occupancy, new_score))
+        if new_words:
+            print("This also created the words:", new_words)
+
+    return added_words
