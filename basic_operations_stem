@@ -42,3 +42,24 @@ def collides_with_existing_words(word, line, column, direction, grid):
 # This is about 15% of the length of the original file.
 # This part is particularly intresting as it is laying out the rules to preemptively avoid any 'glitches' or unexpected problems.
 # Plan to transcribe the rest of the fundamental aspects of this file soon. 
+
+def ends_are_isolated(word, line, column, direction, grid):
+    """ Returns whether the given word is isolated (blank before start and after end).
+    """
+    if direction == "E":
+        # If the preceding space isn't empty
+        if not is_cell_free(line, column-1, grid):
+            return False
+        # If the succeding space isn't empy
+        if not is_cell_free(line, column+len(word), grid):
+            return False
+    if direction == "S":
+        # If the preceding space isn't empty
+        if not is_cell_free(line-1, column, grid):
+            return False
+        # If the succeding space isn't empy
+        if not is_cell_free(line+len(word), column, grid):
+            return False
+
+    return True
+
